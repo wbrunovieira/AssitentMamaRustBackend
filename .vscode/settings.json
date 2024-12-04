@@ -1,0 +1,21 @@
+{
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#556B2F", 
+    "activityBar.background": "#3B5323",      
+    "activityBar.foreground": "#E8F5E9",       // Texto verde-claro
+    "activityBar.inactiveForeground": "#E8F5E999",  // Ícones inativos mais claros
+    "activityBarBadge.background": "#FFD700",  // Dourado vibrante para badges
+    "activityBarBadge.foreground": "#3B5323",  // Texto escuro nos badges
+    "commandCenter.border": "#FFD70099",       // Borda suave em dourado
+    "sash.hoverBorder": "#556B2F",             // Verde-oliva claro no hover
+    "statusBar.background": "#3B5323",         // Fundo verde-escuro da barra de status
+    "statusBar.foreground": "#E8F5E9",         // Texto verde-claro na barra de status
+    "statusBarItem.hoverBackground": "#334D32", // Fundo verde-musgo ao passar o mouse
+    "statusBarItem.remoteBackground": "#556B2F", // Fundo remoto verde-oliva
+    "statusBarItem.remoteForeground": "#E8F5E9", // Texto remoto verde-claro
+    "titleBar.activeBackground": "#3B5323",     // Fundo verde-escuro da title bar
+    "titleBar.activeForeground": "#E8F5E9",     // Texto verde-claro na title bar
+    "titleBar.inactiveBackground": "#3B532399", // Fundo inativo mais suave
+    "titleBar.inactiveForeground": "#E8F5E999"  // Texto inativo mais claro
+  }
+}
