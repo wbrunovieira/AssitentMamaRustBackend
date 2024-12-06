@@ -1,1 +1,42 @@
-/target
+# Diretórios e arquivos de build
+/target/
+
+# Dependências do Rust
+**/*.rs.bk
+
+# Configurações do Cargo
+Cargo.lock
+
+# Arquivos de ambiente e configuração local
+.env
+*.env.*
+
+# Arquivos temporários de IDEs/editores de texto
+.idea/
+.vscode/
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Arquivos gerados por sistemas operacionais
+.DS_Store
+Thumbs.db
+*.log
+
+# Logs de execução
+debug.log
+error.log
+
+# Saídas de testes
+test-output/
+
+# Arquivos binários
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Ferramentas do Rust
+**/doc/
+
