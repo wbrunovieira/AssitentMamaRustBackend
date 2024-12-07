@@ -13,25 +13,33 @@ pub async fn get_weather_in_osasco() -> Result<WeatherInfo, String> {
         location_key, api_key
     );
 
-    let client = Client::new();
+    println!("Consultando URL: {}", url); 
 
+    let client = Client::new();
     let response = client
         .get(&url)
         .send()
         .await
-        .map_err(|err| format!("Erro de conexão com a API de clima: {}", err))?;
+        .map_err(|err| {
+            println!("Erro de conexão com a API de clima: {}", err); 
+            format!("Erro de conexão com a API de clima: {}", err)
+        })?;
 
-    if !response.status().is_success() {
-        return Err(format!(
-            "Falha ao buscar dados meteorológicos: HTTP {}",
-            response.status()
-        ));
-    }
+    println!("Status da resposta: {}", response.status()); 
 
-    let weather_data: AccuWeatherResponse = response
-        .json()
-        .await
-        .map_err(|err| format!("Falha ao parsear resposta da API: {}", err))?;
+    let text_response = response.text().await.map_err(|err| {
+        println!("Erro ao ler corpo da resposta: {}", err); 
+        format!("Erro ao ler corpo da resposta: {}", err)
+    })?;
+
+    println!("Resposta da API (bruta): {}", text_response); 
+  
+    let weather_data: AccuWeatherResponse = serde_json::from_str(&text_response).map_err(|err| {
+        println!("Falha ao parsear resposta da API: {}", err); 
+        format!("Falha ao parsear resposta da API: {}", err)
+    })?;
+
+    println!("Dados parseados: {:?}", weather_data); 
 
     if let Some(forecast) = weather_data.daily_forecasts.get(0) {
         Ok(WeatherInfo {
@@ -43,9 +51,11 @@ pub async fn get_weather_in_osasco() -> Result<WeatherInfo, String> {
             precipitation_probability_night: forecast.night.precipitation_probability,
         })
     } else {
+        println!("Nenhuma previsão encontrada na resposta da API.");
         Err("Nenhuma previsão encontrada na resposta da API".to_string())
     }
 }
+
 
 pub fn default_weather_info() -> WeatherInfo {
     WeatherInfo {

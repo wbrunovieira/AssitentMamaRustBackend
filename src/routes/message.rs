@@ -12,13 +12,18 @@ pub async fn handle_message(Json(payload): Json<MessageInput>) -> Json<MessageRe
             Err(_) => weather_service::default_weather_info(),
         };
 
+        let max_temp_c = (weather_info.max_temperature - 32.0) * 5.0 / 9.0;
+        let min_temp_c = (weather_info.min_temperature - 32.0) * 5.0 / 9.0;
+
+
+     
         let response = format!(
-            "Olá! Hoje é {} de {}, dia de {}. Em Osasco, a temperatura máxima está {} graus, mínima {} graus, com previsão para o dia: {}, e para a noite: {}.",
+            "Olá! Hoje é {} de {}, dia de {}. Em Osasco, a temperatura máxima está {:.0} graus, mínima {:.0} graus, com previsão para o dia: {}, e para a noite: {}.",
             date_info.day,
             date_utils::get_month_name(date_info.month),
             date_info.weekday,
-            weather_info.max_temperature,
-            weather_info.min_temperature,
+            max_temp_c,
+            min_temp_c,
             weather_info.description_day,
             weather_info.description_night
         );
