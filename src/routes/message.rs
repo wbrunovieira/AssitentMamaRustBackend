@@ -1,5 +1,5 @@
 use crate::models::message::{MessageInput, MessageResponse};
-use crate::services::weather_service;
+use crate::services::{weather_service, news_service};
 use crate::utils::date_utils;
 use axum::Json;
 
@@ -15,18 +15,25 @@ pub async fn handle_message(Json(payload): Json<MessageInput>) -> Json<MessageRe
         let max_temp_c = (weather_info.max_temperature - 32.0) * 5.0 / 9.0;
         let min_temp_c = (weather_info.min_temperature - 32.0) * 5.0 / 9.0;
 
+        let articles = match news_service::get_top_headlines().await {
+            Ok(a) => a,
+            Err(_) => vec![],
+        };
+        let news_formatted = news_service::format_news_articles(&articles);
 
      
         let response = format!(
-            "Olá! Hoje é {} de {}, dia de {}. Em Osasco, a temperatura máxima está {:.0} graus, mínima {:.0} graus, com previsão para o dia: {}, e para a noite: {}.",
+            "Olá! Hoje é {} de {}, dia de {}. Em Osasco, a temperatura máxima está {:.0} graus, mínima {:.0} graus, com previsão para o dia: {}, e para a noite: {}.\n\nAqui estão algumas notícias do Brasil:\n{}",
             date_info.day,
             date_utils::get_month_name(date_info.month),
             date_info.weekday,
             max_temp_c,
             min_temp_c,
             weather_info.description_day,
-            weather_info.description_night
+            weather_info.description_night,
+            news_formatted 
         );
+
 
         Json(MessageResponse { reply: response })
     } else {
