@@ -1,9 +1,14 @@
 use crate::models::message::{MessageInput, MessageResponse};
-use crate::services::{weather_service, news_service};
+use crate::services::{weather_service, news_service, database_service::DatabaseService};
 use crate::utils::date_utils;
-use axum::Json;
+use axum::{extract::State, Json}; 
+use axum::response::IntoResponse;
+use std::sync::Arc; 
 
-pub async fn handle_message(Json(payload): Json<MessageInput>) -> Json<MessageResponse> {
+pub async fn handle_message(
+    State(database_service): State<Arc<DatabaseService>>, 
+    Json(payload): Json<MessageInput>
+) -> impl IntoResponse {
     if payload.content.to_lowercase() == "oi márcia" {
         let date_info = date_utils::get_current_date_info();
 
@@ -19,9 +24,9 @@ pub async fn handle_message(Json(payload): Json<MessageInput>) -> Json<MessageRe
             Ok(a) => a,
             Err(_) => vec![],
         };
+
         let news_formatted = news_service::format_news_articles(&articles);
 
-     
         let response = format!(
             "Olá! Hoje é {} de {}, dia de {}. Em Osasco, a temperatura máxima está {:.0} graus, mínima {:.0} graus, com previsão para o dia: {}, e para a noite: {}.\n\nAqui estão algumas notícias do Brasil:\n{}",
             date_info.day,
@@ -34,6 +39,15 @@ pub async fn handle_message(Json(payload): Json<MessageInput>) -> Json<MessageRe
             news_formatted 
         );
 
+        database_service.insert_event(
+            "message", 
+            Some("Oi Marcia"), 
+            Some(&payload.content), 
+            Some(&response), 
+            None, 
+            None, 
+            Some("success")
+        ).await;
 
         Json(MessageResponse { reply: response })
     } else {
