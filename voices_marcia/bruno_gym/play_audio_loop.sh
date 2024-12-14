@@ -18,7 +18,7 @@ while true; do
     echo "Reproduzindo: $FILE"
     mpg123 "$FILE"
     echo "Aguardando 8 minutos..."
-    sleep 480 # Espera por 480 segundos (8 minutos)
+    sleep 250 # Espera por 480 segundos (8 minutos)
   done
 done
 
