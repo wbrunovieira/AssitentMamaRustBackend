@@ -1,5 +1,5 @@
 use crate::models::message::{MessageInput, MessageResponse};
-use crate::services::{weather_service, news_service, database_service::DatabaseService};
+use crate::services::{weather_service, news_service, database_service::DatabaseService, audio_service};
 use crate::utils::date_utils;
 use axum::{extract::State, Json}; 
 use axum::response::IntoResponse;
@@ -28,7 +28,7 @@ pub async fn handle_message(
         let news_formatted = news_service::format_news_articles(&articles);
 
         let response = format!(
-            "Olá! Hoje é {} de {}, dia de {}. Em Osasco, a temperatura máxima está {:.0} graus, mínima {:.0} graus, com previsão para o dia: {}, e para a noite: {}.\n\nAqui estão algumas notícias do Brasil:\n{}",
+            "Olá! Rosiii!! ... tudo bem ?? tudo joinha com você ? ..... dormiu mais que a cama ? ...... Hoje é {} de {}, dia de {}...... vamos ver se o tempo vai estar jururû ou bem humorado..... deixa eu procurar aqui.... Aqui, achei. Em Osasco, a temperatura máxima está {:.0} graus, mínima {:.0} graus, com previsão para o dia: {}, e para a noite: {}. ula ia heim!!! .... agora deixa eu ver aqui o que aconteceu no mundo enquanto você dormia. ... Aqui... la vai algumas notícias do Brasil:{}",
             date_info.day,
             date_utils::get_month_name(date_info.month),
             date_info.weekday,
@@ -38,6 +38,10 @@ pub async fn handle_message(
             weather_info.description_night,
             news_formatted 
         );
+
+         let audio_path = audio_service::generate_audio(&response).await;
+
+
 
         database_service.insert_event(
             "message", 

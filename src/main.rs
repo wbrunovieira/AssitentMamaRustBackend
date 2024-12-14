@@ -12,6 +12,8 @@ use std::net::SocketAddr;
 use std::sync::Arc;
 use tower_http::cors::{AllowOrigin, CorsLayer};
 
+
+
 #[tokio::main]
 async fn main() {
     dotenv().ok();
