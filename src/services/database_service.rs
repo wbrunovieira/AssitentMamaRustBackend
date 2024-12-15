@@ -43,7 +43,8 @@ impl DatabaseService {
                 system_response TEXT,
                 emotion TEXT,
                 duration REAL,
-                status TEXT
+                status TEXT,
+                file_name TEXT
             );
         "#;
 
@@ -59,6 +60,7 @@ impl DatabaseService {
         emotion: Option<&str>,
         duration: Option<f64>,
         status: Option<&str>,
+        file_name: Option<&str>, 
     ) {
         let query = r#"
             INSERT INTO events (datetime, event_type, command, user_text, system_response, emotion, duration, status)
@@ -73,6 +75,7 @@ impl DatabaseService {
             .bind(emotion)
             .bind(duration)
             .bind(status)
+            .bind(file_name) 
             .execute(&self.pool)
             .await
             .expect("[ERROR] Falha ao inserir evento no banco de dados");

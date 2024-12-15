@@ -3,10 +3,10 @@ use std::fs::File;
 use std::io::Write;
 use std::path::Path;
 use std::env;
-
 use uuid::Uuid; 
+use mp3_duration;
 
-pub async fn generate_audio(message: &str) -> String {
+pub async fn generate_audio(message: &str, file_name: &str) -> String {
     let url = "https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL";
     let api_key = env::var("ELEVENS_LABS_API_KEY").expect("API key not set");
 
@@ -45,22 +45,17 @@ pub async fn generate_audio(message: &str) -> String {
                     }
                 };
     
-                let file_path = format!("./voices_marcia/welcome/{}.mp3", Uuid::new_v4());
+                let file_path = format!("./voices_marcia/welcome/{}", file_name);
                 let path = Path::new(&file_path);
-                match File::create(&path) {
-                    Ok(mut file) => {
-                        if let Err(e) = file.write_all(&audio_bytes) {
-                            eprintln!("[ERROR] Falha ao escrever o arquivo de áudio: {:?}", e);
-                            return String::new();
-                        }
-                    },
-                    Err(e) => {
-                        eprintln!("[ERROR] Não foi possível criar o arquivo de áudio: {:?}", e);
-                        return String::new();
-                    }
-                }
+                let mut file = File::create(&path).expect("[ERROR] Falha ao criar arquivo de áudio");
+                file.write_all(&audio_bytes).expect("[ERROR] Falha ao salvar o áudio");
+
+                 let duration = match mp3_duration::from_path(&path) {
+                    Ok(dur) => dur.as_secs_f64(),
+                    Err(_) => 0.0,
+                };
                 
-                file_path
+                (file_path, duration)
             } else {
                 eprintln!("[ERROR] Resposta com falha da ElevenLabs. Status: {}", res.status());
                 String::new()

@@ -17,8 +17,8 @@ while true; do
   for FILE in "${AUDIO_FILES[@]}"; do
     echo "Reproduzindo: $FILE"
     mpg123 "$FILE"
-    echo "Aguardando 8 minutos..."
-    sleep 250 # Espera por 480 segundos (8 minutos)
+    echo "Aguardando "
+    sleep 300 
   done
 done
 

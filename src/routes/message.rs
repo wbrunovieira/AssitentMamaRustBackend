@@ -39,24 +39,31 @@ pub async fn handle_message(
             news_formatted 
         );
 
-         let audio_path = audio_service::generate_audio(&response).await;
+        let file_name = format!("welcome{:02}{:02}{:04}.mp3", date_info.day, date_info.month, date_info.year);
+        let (audio_path, duration) = audio_service::generate_audio(&response, &file_name).await;
 
+    database_service.insert_event(
+    "message", 
+    Some("Oi Marcia"), 
+    Some(&payload.content), 
+    Some(&response), 
+    None, 
+    Some(duration), 
+    Some("success"),
+    Some(&file_name)
+).await;
 
-
-        database_service.insert_event(
-            "message", 
-            Some("Oi Marcia"), 
-            Some(&payload.content), 
-            Some(&response), 
-            None, 
-            None, 
-            Some("success")
-        ).await;
-
-        Json(MessageResponse { reply: response })
+        Json(MessageResponse { 
+            reply: response, 
+            additional_data: Some(serde_json::json!({ 
+                "audio_path": audio_path, 
+                "file_name": file_name 
+            })) 
+        })
     } else {
         Json(MessageResponse {
             reply: "Desculpe, não entendi. Você quis dizer 'Oi Marcia'?".to_string(),
+            additional_data: None
         })
     }
 }

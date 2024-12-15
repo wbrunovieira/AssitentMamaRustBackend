@@ -8,6 +8,7 @@ pub struct MessageInput {
 #[derive(Serialize, Debug)]
 pub struct MessageResponse {
     pub reply: String,
+    pub additional_data: Option<serde_json::Value>
 }
 
 #[derive(Deserialize, Debug)]
