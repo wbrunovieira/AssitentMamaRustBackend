@@ -17,6 +17,7 @@ pub fn get_current_date_info() -> DateInfo {
     DateInfo {
         day: now.day(),
         month: now.month(),
+         year: now.year(),
         weekday: weekday.to_string(),
     }
 }
